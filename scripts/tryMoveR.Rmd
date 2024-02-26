@@ -1,0 +1,43 @@
+# Load packages
+
+```{r}
+rm(list = ls())
+library(MoveR)
+```
+
+# Load example data
+```{r}
+# download the example data 
+# MoveR::DLsampleData(dataSet = 1, tracker = "TRex", dir = "data/raw/")
+# trackdat_sample <-MoveR::readTrex("data/raw/MoveR_SampleData-main/sample_1/TRexOutput")
+
+# set up folder path for the raw data
+folder_path <- "/Users/lizimai/Insync/zimai.li@evobio.eu/Google Drive/DoctorToBe/01_Projects/ZIM02_IDOL/P4_dataAnalysis/idol_matlab/data/processed/singleAntTrajectories"
+
+# List all CSV files in the folder
+csv_files <- list.files(path = folder_path, pattern = "\\.csv$", full.names = TRUE)
+# Read each CSV file into a list
+trackdat <- trackletsClass(do.call(c, lapply(csv_files, readPlain, sep = ",", flipY = TRUE, imgHeight = 1944)))
+```
+
+# Display the data
+```{r}
+# check the class, number of tracklets and their id
+class(trackdat)
+length(trackdat)
+names(trackdat)
+
+# display the data for the first particle only
+str(trackdat$`P4-40_BG`)
+
+# check the additional information retrieved from the tracking output (depends on the tracking software used)
+MoveR::getInfo(trackdat)
+# scale and imgRes are empty, as the tracking software does not provide this information
+# setInfo() can be used to add additional information to the tracklet object
+```
+
+# Plot the data
+```{r}
+# draw the trajectories of all particles
+drawTracklets(trackdat, imgRes = c(2592, 1944))
+```
